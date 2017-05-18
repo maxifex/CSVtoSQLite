@@ -43,7 +43,7 @@ class csvSQLiteConvert:
         '''
 
         #Quote values to allow smooth insertion of values
-        row = ['"'+v.strip().strip('"')+'"' for v in list(rowDict.values())]
+        row = ['"'+v.strip().strip('"')+'"' for v in rowDict.values()]
 
         #Create sql statement to insert data into database table
         statement = "insert into %s (%s) values (%s)" %(tableName, ", ".join(self.tableFields), ", ".join(row))
@@ -61,10 +61,10 @@ class csvSQLiteConvert:
         '''
 
         #Create sql statement to create database table
-        print('Table with name: %s created' % tableName)
-        print(self.tableFields)
+        print 'Table with name: %s created' % tableName
+        print self.tableFields
         statement = 'CREATE TABLE IF NOT EXISTS %s (_id integer primary key,%s text);' %(tableName, " text,".join(self.tableFields))
-        print('Table with name: %s created' % tableName)
+        print 'Table with name: %s created' % tableName
         self.cursor.execute(statement)
 
 
@@ -99,8 +99,8 @@ class csvSQLiteConvert:
                 # use buffered IO and memory management to help with large files
                     yield row
         except Exception as e:
-            print("I/O error({0}): {1}".format(e.errno, e.strerror))
-            print("File {} NOT found".format(csvPath))
+            print "I/O error({0}): {1}".format(e.errno, e.strerror)
+            print "File {} NOT found".format(csvPath)
             exit()
 
 
@@ -115,7 +115,7 @@ class csvSQLiteConvert:
         if len(customFields) == 0:
 
             for row in self.__readFile(csvFile):
-                self.tableFields = list(row.keys())
+                self.tableFields = row.keys()
                 break
         else:
             self.tableFields = customFields
