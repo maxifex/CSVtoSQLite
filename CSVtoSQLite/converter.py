@@ -1,4 +1,6 @@
 __author__ = 'stanley'
+
+#Modified by yaoxuanbin@139.com
 import sqlite3
 import os
 import csv
@@ -43,11 +45,16 @@ class csvSQLiteConvert:
         '''
 
         #Quote values to allow smooth insertion of values
+        row2=[]
         row = ['"'+v.strip().strip('"')+'"' for v in rowDict.values()]
-
+        
+        #Modified by yaoxuanbin@139.com
+        for n in self.tableFields:
+            row2.append(rowDict[n])
+        
         #Create sql statement to insert data into database table
-        statement = "insert into %s (%s) values (%s)" %(tableName, ", ".join(self.tableFields), ", ".join(row))
-        print(statement)
+        statement = "insert into %s (%s) values (%s)" %(tableName, ", ".join(self.tableFields), ", ".join(row2))
+        #print(statement)
         self.cursor.execute(statement)
 
 
@@ -61,10 +68,11 @@ class csvSQLiteConvert:
         '''
 
         #Create sql statement to create database table
-        print 'Table with name: %s created' % tableName
-        print self.tableFields
+        print('Table with name: %s created' % tableName)
+        print(self.tableFields)
         statement = 'CREATE TABLE IF NOT EXISTS %s (_id integer primary key,%s text);' %(tableName, " text,".join(self.tableFields))
-        print 'Table with name: %s created' % tableName
+        #print(statement)
+        print('Table with name: %s created' % tableName)
         self.cursor.execute(statement)
 
 
@@ -92,19 +100,20 @@ class csvSQLiteConvert:
                      quoting=csv.QUOTE_NONNUMERIC, skipinitialspace=True)
 
             #This will make sure to close file even if exception is raised
-            with open(csvPath, 'rb') as f:
+            with open(csvPath, 'r') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
                 # treat the file object as an iterable,and automatically
                 # use buffered IO and memory management to help with large files
                     yield row
         except Exception as e:
-            print "I/O error({0}): {1}".format(e.errno, e.strerror)
-            print "File {} NOT found".format(csvPath)
+            print(e)
+            #print "I/O error({0}): {1}".format(e.errno, e.strerror)
+            #print "File {} NOT found".format(csvPath)
             exit()
 
 
-    def setTableFields(self,csvFile, customFields = []):
+    def setTableFields(self,csvFile, customFields=[]):
 
         '''
             Initialise list of fields; If list is not available use first row of csv
@@ -121,7 +130,7 @@ class csvSQLiteConvert:
             self.tableFields = customFields
 
 
-    def loadCSVtoTable(self, csvFile, tableName):
+    def loadCSVtoTable(self, csvFile, tableName,customFields=[]):
 
         '''
         Load data into SLQlite Database
@@ -129,7 +138,7 @@ class csvSQLiteConvert:
         '''
 
         #set table fields from CSV it is not explicitly set
-        self.setTableFields(csvFile)
+        self.setTableFields(csvFile,customFields)
 
         #Create Database table and make it ready for insertion of data
         self.__createTable(tableName)
@@ -137,6 +146,7 @@ class csvSQLiteConvert:
         #Read and insert each live in to the created table
         for row in self.__readFile(csvFile):
             self.__insertRow(tableName, row)
+            
 
         #commit records when done
         self.conn.commit()
