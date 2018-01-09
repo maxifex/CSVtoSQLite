@@ -18,7 +18,7 @@ CSVtoSQLiteDB
     ###new
     from CSVtoSQLite import converter
     loader = converter.csvSQLiteConvert('example-sqlite-database-name.db')
-    loader.setTableFields('path-to-csv',customFields=["a","b"])
+    loader.loadCSVtoTable('earfcn.csv',"earfcn",customFields=["a","b"])
     loader.close()
     ###old
     #!/usr/bin/env python
