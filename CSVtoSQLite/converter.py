@@ -50,7 +50,7 @@ class csvSQLiteConvert:
         
         #Modified by yaoxuanbin@139.com
         for n in self.tableFields:
-            row2.append(rowDict[n])
+            row2.append('"'+rowDict[n]+'"')
         
         #Create sql statement to insert data into database table
         statement = "insert into %s (%s) values (%s)" %(tableName, ", ".join(self.tableFields), ", ".join(row2))
